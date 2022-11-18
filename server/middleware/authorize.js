@@ -1,4 +1,4 @@
-module.exports = async (req, res, next) => {
+export default async (req, res, next) => {
     // Check req.user to ensure the user's email is 'admin'
     try {
       if (!req.user || req.user.email !== 'admin')

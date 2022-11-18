@@ -1,6 +1,6 @@
-const pool = require('../utils/pool');
+import pool from '../utils/pool';
 
-module.exports = class User {
+export default class User {
   id;
   firstName;
   lastName;

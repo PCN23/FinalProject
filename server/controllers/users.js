@@ -1,51 +1,17 @@
-const { Router } = require('express');
-const authenticate = require('../middleware/authenticate');
-const authorize = require('../middleware/authorize');
-const User = require('../models/User');
-const UserService = require('../services/UserService');
+import { Router }  from 'express';
+// import {authenticate} from '../middleware/authenticate';
+// import {authorize} from '../middleware/authorize';
+// import User from '../models/User';
+import UserService from '../services/UserService';
 
 const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 
-module.exports = Router()
-  .post('/', async (req, res, next) => {
+export default Router().post('/', async (req, res, next) => {
     try {
-      const user = await UserService.create(req.body);
-      res.json(user);
+    const user = await UserService.create(req.body);
+    res.json(user);
+      res.send('hello world from here')
     } catch (error) {
-      next(error);
+    next(error);
     }
-  })
-  .post('/sessions', async (req, res, next) => {
-    try {
-      const { email, password } = req.body;
-      const sessionToken = await UserService.signIn({ email, password });
-
-      res
-        .cookie(process.env.COOKIE_NAME, sessionToken, {
-          httpOnly: true,
-          maxAge: ONE_DAY_IN_MS,
-        })
-        .json({ message: 'Signed in successfully!' });
-    } catch (error) {
-      next(error);
-    }
-  })
-  // TODO: This route should only be accessible to signed in users
-  .get('/me', authenticate, (req, res) => {
-    res.json(req.user);
-    
-  })
-  // TODO: This route should only be accessible to the admin user
-  .get('/', authenticate, authorize, async (req, res, next) => {
-    try {
-      const users = await User.getAll();
-      res.send(users);
-    } catch (error) {
-      next(error);
-    }
-  })
-  .delete('/sessions', (req, res) => {
-    res
-      .clearCookie(process.env.COOKIE_NAME)
-      .json({ success: true, message: 'Signed out successfully!' });
-  });
+});
